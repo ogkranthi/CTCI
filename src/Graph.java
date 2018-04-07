@@ -64,21 +64,47 @@ public class Graph {
 		DFShelper(start,visited);
 	}
 	
+	public boolean isCyclicUtil(int vertex, boolean[] visited, int parent) {
+		visited[vertex] = true;
+		for (int i=0;i<this.adjList[vertex].size();i++) {
+			if (!visited[this.adjList[vertex].get(i)]) {
+				if (isCyclicUtil(this.adjList[vertex].get(i),visited,vertex)) {
+					return true;
+				} 
+			} else if (vertex != parent) {
+				return true;
+			}	
+		}	
+		return false;
+	}
+	
+	public boolean isCyclic() {
+		boolean visited[] = new boolean[this.V];
+		for (int j=0;j<this.V;j++) {
+			visited[j] = false;
+		}
+		for (int i=0;i<this.V;i++) {
+			if (!visited[i]) {
+				if (isCyclicUtil(i,visited,-1)) return true;
+			}
+		}
+		return false;
+	}
+	
 	//Method to find inward edges
 	//Method to find outward edges
 	//Method to return subgraph
 	
 	public static void main(String args[]) {
-		Graph graph = new Graph(7);
+		Graph graph = new Graph(5);
 		graph.addEdge(0,1);
-		graph.addEdge(0,2);
-		graph.addEdge(0,3);
-		graph.addEdge(3,4);
-		graph.addEdge(3,5);
-		graph.addEdge(4,6);
-		graph.addEdge(5,6);
-		graph.printGraph();
-		//graph.BFS(3);
-		graph.DFS(0);
+		graph.addEdge(1,2);
+		graph.addEdge(2,3);
+		//graph.addEdge(3,1);
+		if (graph.isCyclic()) {
+			System.out.print("Graph is cyclic");
+		} else {
+			System.out.print("Graph is not cyclic");
+		}
 	}
 }
